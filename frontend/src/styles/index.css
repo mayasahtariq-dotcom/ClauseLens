@@ -1,0 +1,122 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  html {
+    @apply bg-paper text-ink font-body antialiased;
+    scroll-behavior: smooth;
+  }
+  body {
+    @apply min-h-screen bg-paper;
+    overflow-x: clip;
+  }
+  h1,
+  h2,
+  h3,
+  h4 {
+    @apply font-display font-extrabold tracking-tight;
+  }
+  :focus-visible {
+    outline: 3px solid #6c5ce7;
+    outline-offset: 3px;
+    border-radius: 12px;
+  }
+  ::selection {
+    @apply bg-sun text-ink;
+  }
+  @media (prefers-reduced-motion: reduce) {
+    html {
+      scroll-behavior: auto;
+    }
+    *,
+    *::before,
+    *::after {
+      animation-duration: 0.01ms !important;
+      animation-iteration-count: 1 !important;
+      transition-duration: 0.01ms !important;
+    }
+  }
+}
+
+@layer components {
+  /* Surfaces: rounded, softly shadowed, layered. */
+  .card {
+    @apply rounded-4xl border border-ink/5 bg-white shadow-soft;
+  }
+  .card-hover {
+    @apply transition duration-300 ease-out hover:-translate-y-1 hover:shadow-lift;
+  }
+  .panel {
+    @apply card;
+  }
+  .panel-sm {
+    @apply rounded-3xl border border-ink/5 bg-white shadow-soft;
+  }
+  .glass {
+    @apply border border-white/60 bg-white/70 shadow-soft backdrop-blur-xl;
+  }
+  .eyebrow {
+    @apply inline-flex items-center gap-2 rounded-full bg-white px-3 py-1 text-xs font-bold uppercase tracking-[0.14em] text-slate shadow-inset;
+  }
+  .label-tag {
+    @apply inline-flex items-center gap-2 rounded-full px-3.5 py-1.5 text-sm font-bold;
+  }
+  .chip {
+    @apply inline-flex items-center gap-1.5 rounded-full bg-white px-3 py-1.5 text-sm font-semibold shadow-soft;
+  }
+
+  /* Pill buttons with lift + glow. */
+  .btn {
+    @apply relative inline-flex items-center justify-center gap-2 rounded-full px-6 py-3 font-display text-[15px] font-bold transition duration-200 ease-out;
+  }
+  .btn:hover:not(:disabled) {
+    @apply -translate-y-0.5;
+  }
+  .btn:active:not(:disabled) {
+    @apply translate-y-0 scale-[0.98];
+  }
+  .btn:disabled {
+    @apply cursor-not-allowed opacity-45;
+  }
+  .btn-primary {
+    @apply btn bg-ink text-white shadow-lift hover:shadow-glow-iris;
+  }
+  .btn-iris {
+    @apply btn bg-iris text-white shadow-glow-iris hover:bg-iris-deep;
+  }
+  .btn-yellow {
+    @apply btn bg-sun text-ink shadow-soft hover:shadow-glow-sun;
+  }
+  .btn-white {
+    @apply btn bg-white text-ink shadow-soft hover:shadow-lift;
+  }
+  .field {
+    @apply w-full rounded-2xl border border-ink/10 bg-paper px-4 py-3.5 text-base font-medium transition placeholder:text-slate/70 focus:border-iris focus:bg-white focus:shadow-glow-iris focus:outline-none;
+  }
+  .section-number {
+    @apply inline-flex h-10 w-10 shrink-0 items-center justify-center rounded-2xl bg-sun font-display text-base font-extrabold shadow-glow-sun;
+  }
+
+  /* Scroll reveal (see components/motion.tsx). */
+  .reveal {
+    @apply translate-y-6 opacity-0 transition duration-700 ease-out;
+  }
+  .reveal.is-visible {
+    @apply translate-y-0 opacity-100;
+  }
+
+  .bg-dots {
+    background-image: radial-gradient(rgba(20, 18, 31, 0.08) 1px, transparent 1px);
+    background-size: 22px 22px;
+  }
+  .text-gradient {
+    @apply bg-clip-text text-transparent;
+    background-image: linear-gradient(90deg, #6c5ce7, #ff66c4 55%, #ff8a3d);
+  }
+  .shimmer-bar {
+    background: linear-gradient(90deg, rgba(255, 255, 255, 0) 0%, rgba(255, 255, 255, 0.7) 50%, rgba(255, 255, 255, 0) 100%);
+    background-size: 200% 100%;
+    @apply animate-shimmer;
+  }
+}

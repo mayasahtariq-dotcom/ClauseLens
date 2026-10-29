@@ -1,0 +1,45 @@
+# Secrets & environment
+.env
+.env.*
+*.env
+*.env.local
+!.env.example
+*.pem
+*.key
+*.cert
+*.crt
+
+# Python
+**/__pycache__/
+*.py[cod]
+*$py.class
+backend/.venv/
+.venv/
+venv/
+ENV/
+backend/var/
+*.egg-info/
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+.coverage
+htmlcov/
+
+# Node / Frontend
+node_modules/
+dist/
+dist-ssr/
+build/
+test-results/
+playwright-report/
+*.tsbuildinfo
+
+# OS & Editor
+.DS_Store
+Thumbs.db
+.idea/
+.vscode/
+*.swp
+*.swo
+*.log
+
