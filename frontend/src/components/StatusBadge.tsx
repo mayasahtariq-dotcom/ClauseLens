@@ -55,3 +55,15 @@ export function RunStatusBadge({ status, terminal }: { status: InvestigationStat
     </span>
   );
 }
+
+const RISK: Record<string, { label: string; cls: string }> = {
+  high: { label: "High Risk", cls: "bg-bubblegum text-white" },
+  medium: { label: "Medium Risk", cls: "bg-tangerine text-ink" },
+  low: { label: "Low Risk", cls: "bg-lagoon-soft text-ink" },
+};
+
+export function RiskBadge({ level }: { level?: string | null }) {
+  if (!level || !RISK[level.toLowerCase()]) return null;
+  const { label, cls } = RISK[level.toLowerCase()];
+  return <span className={`rounded-full px-2.5 py-0.5 text-xs font-bold ${cls}`}>{label}</span>;
+}

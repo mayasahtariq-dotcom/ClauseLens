@@ -92,6 +92,9 @@ class Claim(BaseModel):
     value: PolicyValue
     ambiguous: bool = False
     summary: str | None = None
+    risk_level: str | None = "none"  # "high" | "medium" | "low" | "none"
+    risk_reason: str | None = None
+    explanation: str | None = None
 
 
 class Finding(BaseModel):

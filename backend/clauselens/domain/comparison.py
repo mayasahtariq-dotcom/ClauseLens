@@ -325,6 +325,15 @@ def compare(
             elif field in priority_fields and finding.status is not FieldStatus.FOUND:
                 missing.append(f"{vp.vendor.name}: {label} {_STATUS_PHRASE[finding.status]}.")
 
+            for ev in finding.evidence:
+                risk = (ev.extraction.get("risk_level") or "").lower()
+                reason = ev.extraction.get("risk_reason")
+                if risk in {"high", "medium"} and reason:
+                    tag = "High Risk" if risk == "high" else "Caution"
+                    flag_item = f"{vp.vendor.name}: {label} [{tag}] - {reason}"
+                    if flag_item not in contradictions:
+                        contradictions.append(flag_item)
+
     recommendation = _recommend(usable, totals, coverage, names, rationale, skipped, included_weight)
     return ComparisonReport(
         vendors=[vp.vendor for vp in policies],

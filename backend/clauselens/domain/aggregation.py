@@ -66,6 +66,13 @@ def build_evidence(
 ) -> Evidence:
     src = sources.get(claim.source_key)
     status, method = verify_quote(claim.quote, src.content if src else None)
+    meta = dict(extraction_meta)
+    if claim.risk_level:
+        meta["risk_level"] = claim.risk_level
+    if claim.risk_reason:
+        meta["risk_reason"] = claim.risk_reason
+    if claim.explanation:
+        meta["explanation"] = claim.explanation
     return Evidence(
         field=claim.field,
         source_key=claim.source_key,
@@ -74,7 +81,7 @@ def build_evidence(
         retrieved_at=src.retrieved_at if src else None,
         verification=status,
         match_method=method,
-        extraction=extraction_meta,
+        extraction=meta,
     )
 
 

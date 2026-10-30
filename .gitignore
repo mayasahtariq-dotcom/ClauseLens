@@ -24,8 +24,12 @@ backend/var/
 .ruff_cache/
 .coverage
 htmlcov/
+*.db
+*.sqlite
+*.sqlite3
 
 # Node / Frontend
+frontend-old/
 node_modules/
 dist/
 dist-ssr/

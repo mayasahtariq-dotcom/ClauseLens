@@ -38,6 +38,9 @@ class OpenAICompatibleLLMProvider:
         self._settings = settings
         self._url = f"{base}/chat/completions"
         self._headers = {"Authorization": f"Bearer {key}"} if key else {}
+        if "openrouter.ai" in base:
+            self._headers["HTTP-Referer"] = "https://clauselens.app"
+            self._headers["X-Title"] = "ClauseLens"
         self._client = client or httpx.Client(timeout=settings.llm_timeout_seconds)
         self._gate = threading.BoundedSemaphore(settings.llm_max_concurrency)
 

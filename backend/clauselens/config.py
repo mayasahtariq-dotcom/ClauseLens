@@ -57,6 +57,9 @@ class Settings(BaseSettings):
     llm_base_url: str = "https://ollama.com"
     llm_api_key: SecretStr | None = None
     llm_model: str = "gpt-oss:120b"
+    openrouter_api_key: SecretStr | None = None
+    openrouter_model: str = "anthropic/claude-3.5-sonnet"
+    openrouter_base_url: str = "https://openrouter.ai/api/v1"
     llm_timeout_seconds: float = 120.0
     llm_max_retries: int = Field(default=2, ge=0, le=5)
     llm_max_concurrency: int = Field(default=4, ge=1, le=32)
@@ -150,11 +153,12 @@ class Settings(BaseSettings):
 
     def public_summary(self) -> dict[str, object]:
         """Non-secret configuration, safe to expose via /api/meta and logs."""
+        model = self.openrouter_model if self.llm_provider == "openrouter" else self.llm_model
         return {
             "environment": self.environment.value,
             "web_research_provider": self.web_research_provider,
             "llm_provider": self.llm_provider,
-            "llm_model": self.llm_model,
+            "llm_model": model,
             "job_queue_provider": self.job_queue_provider,
             "persistence_provider": self.persistence_provider,
             "storage_provider": self.storage_provider,

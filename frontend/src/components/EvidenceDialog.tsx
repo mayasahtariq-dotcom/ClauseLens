@@ -2,7 +2,7 @@ import { ExternalLink, Quote, X } from "lucide-react";
 import { useEffect, useRef } from "react";
 import type { Evidence } from "../api/types";
 import type { EvidenceTarget } from "./ComparisonMatrix";
-import { VerificationBadge } from "./StatusBadge";
+import { RiskBadge, VerificationBadge } from "./StatusBadge";
 import { ErrorState, LoadingState } from "./ui";
 
 interface Props {
@@ -62,6 +62,7 @@ export function EvidenceDialog({ target, fieldLabel, evidence, loading, error, o
             <article key={e.id} className="card animate-slide-up p-5" style={{ animationDelay: `${i * 90}ms` }}>
               <div className="mb-3 flex flex-wrap items-center gap-2">
                 <VerificationBadge status={e.verification} />
+                <RiskBadge level={e.extraction?.risk_level} />
                 <span className="rounded-full bg-sun px-2 py-0.5 text-xs font-bold">{e.source_key}</span>
               </div>
               <blockquote className="rounded-3xl border-l-4 border-bubblegum bg-paper px-5 py-4 text-lg font-semibold leading-snug">
@@ -74,6 +75,18 @@ export function EvidenceDialog({ target, fieldLabel, evidence, loading, error, o
                 </p>
               ) : null}
               <dl className="mt-4 grid gap-x-4 gap-y-1.5 text-sm sm:grid-cols-[7rem_1fr]">
+                {e.extraction?.risk_reason ? (
+                  <>
+                    <dt className="font-bold text-slate">Risk notice</dt>
+                    <dd className="font-semibold text-bubblegum-deep">{e.extraction.risk_reason}</dd>
+                  </>
+                ) : null}
+                {e.extraction?.explanation ? (
+                  <>
+                    <dt className="font-bold text-slate">In plain English</dt>
+                    <dd>{e.extraction.explanation}</dd>
+                  </>
+                ) : null}
                 <dt className="font-bold text-slate">Source</dt>
                 <dd className="break-all">
                   {e.source_url ? (
