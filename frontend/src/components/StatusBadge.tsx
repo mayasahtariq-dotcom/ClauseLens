@@ -63,7 +63,8 @@ const RISK: Record<string, { label: string; cls: string }> = {
 };
 
 export function RiskBadge({ level }: { level?: string | null }) {
-  if (!level || !RISK[level.toLowerCase()]) return null;
-  const { label, cls } = RISK[level.toLowerCase()];
-  return <span className={`rounded-full px-2.5 py-0.5 text-xs font-bold ${cls}`}>{label}</span>;
+  if (!level) return null;
+  const item = RISK[level.toLowerCase()];
+  if (!item) return null;
+  return <span className={`rounded-full px-2.5 py-0.5 text-xs font-bold ${item.cls}`}>{item.label}</span>;
 }

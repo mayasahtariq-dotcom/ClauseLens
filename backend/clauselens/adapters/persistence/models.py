@@ -11,6 +11,7 @@ from sqlalchemy import (
     BigInteger,
     Boolean,
     DateTime,
+    Float,
     ForeignKey,
     Index,
     Integer,
@@ -198,3 +199,35 @@ class InvestigationEventRow(Base):
     vendor_name: Mapped[str | None] = mapped_column(String(120))
     message: Mapped[str] = mapped_column(Text)
     data: Mapped[dict[str, Any]] = mapped_column(JSONType, default=dict)
+
+
+class SubscriptionRow(Base):
+    __tablename__ = "subscriptions"
+
+    id: Mapped[uuid.UUID] = mapped_column(Uuid, primary_key=True, default=uuid.uuid4)
+    vendor_name: Mapped[str] = mapped_column(String(120), index=True)
+    vendor_id: Mapped[uuid.UUID | None] = mapped_column(
+        Uuid, ForeignKey("vendors.id", ondelete="SET NULL"), nullable=True, index=True
+    )
+    plan_name: Mapped[str] = mapped_column(String(120), default="Standard")
+    status: Mapped[str] = mapped_column(String(20), default="active", index=True)
+    billing_frequency: Mapped[str] = mapped_column(String(20), default="monthly")
+    recurring_amount: Mapped[float] = mapped_column(Float, default=0.0)
+    currency: Mapped[str] = mapped_column(String(10), default="USD")
+
+    start_date: Mapped[datetime] = mapped_column(DateTime(timezone=True))
+    next_renewal_date: Mapped[datetime | None] = mapped_column(DateTime(timezone=True), nullable=True)
+    trial_start_date: Mapped[datetime | None] = mapped_column(DateTime(timezone=True), nullable=True)
+    trial_expiry_date: Mapped[datetime | None] = mapped_column(DateTime(timezone=True), nullable=True)
+    cancellation_notice_hours: Mapped[int] = mapped_column(Integer, default=24)
+    subscription_expiry_date: Mapped[datetime | None] = mapped_column(DateTime(timezone=True), nullable=True)
+
+    reminders: Mapped[list[Any]] = mapped_column(JSONType, default=list)
+    notes: Mapped[str | None] = mapped_column(Text, nullable=True)
+    policy_snapshot_id: Mapped[uuid.UUID | None] = mapped_column(
+        Uuid, ForeignKey("policy_snapshots.id", ondelete="SET NULL"), nullable=True
+    )
+
+    created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=utcnow, index=True)
+    updated_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=utcnow, onupdate=utcnow)
+

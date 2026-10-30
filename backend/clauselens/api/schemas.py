@@ -40,7 +40,7 @@ class VendorIn(BaseModel):
 
 
 class InvestigationCreate(BaseModel):
-    vendors: list[VendorIn] = Field(min_length=2, max_length=10)
+    vendors: list[VendorIn] = Field(min_length=1, max_length=10)
     priorities: list[Priority] = Field(default_factory=list, max_length=9)
 
     @model_validator(mode="after")

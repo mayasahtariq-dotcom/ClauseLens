@@ -22,9 +22,9 @@ logger = logging.getLogger(__name__)
 MAX_EXPLANATION_CHARS = 1500
 _NUM = re.compile(r"\d+(?:\.\d+)?")
 
-SYSTEM = """You write short plain-English summaries of a policy comparison for consumers.
+SYSTEM = """You write short plain-English summaries of consumer policy terms and comparisons.
 Use ONLY the facts in the JSON provided. Do not add facts, numbers, vendors or advice that are not in it.
-Do not change the recommendation. Mention important unknown, unverified or conflicting information.
+Do not change the recommendation or findings. Mention important unknown, unverified or conflicting information or risk notices.
 Do not present this as legal advice. Write at most 130 words, no headings, no lists, no markdown."""
 
 

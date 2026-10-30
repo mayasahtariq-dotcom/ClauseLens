@@ -32,7 +32,7 @@ class Settings(BaseSettings):
 
     # --- HTTP API ---
     cors_origins: Annotated[list[str], NoDecode] = Field(default_factory=lambda: ["http://localhost:5173"])
-    max_vendors_per_investigation: int = Field(default=5, ge=2, le=10)
+    max_vendors_per_investigation: int = Field(default=5, ge=1, le=10)
     rate_limit_investigations_per_minute: int = Field(default=10, ge=1)
 
     # --- Persistence ---

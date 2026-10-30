@@ -399,4 +399,8 @@ def _recommend(
     if gaps:
         notes.append("Missing or unverified data for " + ", ".join(gaps)
                      + " limits confidence; unknown terms were not assumed to be favourable or unfavourable.")
-    return rec(top, f"{names[top]} best matches your priorities based on verified policy text.", confidence)
+    if len(usable) == 1:
+        headline = f"{names[top]} policy profile and terms summary based on verified policy text."
+    else:
+        headline = f"{names[top]} best matches your priorities based on verified policy text."
+    return rec(top, headline, confidence)

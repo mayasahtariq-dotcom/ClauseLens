@@ -11,7 +11,7 @@ from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import JSONResponse
 
 from clauselens.api.deps import RateLimiter
-from clauselens.api.routes import investigations, reports, system
+from clauselens.api.routes import investigations, reports, subscriptions, system
 from clauselens.config import Settings, get_settings
 from clauselens.container import Container, build_container
 from clauselens.domain.errors import ClauseLensError, ErrorCategory
@@ -48,7 +48,7 @@ def create_app(settings: Settings | None = None, container: Container | None = N
     app.add_middleware(
         CORSMiddleware,
         allow_origins=settings.cors_origins,
-        allow_methods=["GET", "POST"],
+        allow_methods=["GET", "POST", "PATCH", "DELETE", "OPTIONS"],
         allow_headers=["Content-Type", "Idempotency-Key", "Last-Event-ID"],
         allow_credentials=False,
     )
@@ -95,4 +95,5 @@ def create_app(settings: Settings | None = None, container: Container | None = N
     app.include_router(system.router)
     app.include_router(investigations.router)
     app.include_router(reports.router)
+    app.include_router(subscriptions.router)
     return app

@@ -4,6 +4,8 @@ import { HomePage } from "./pages/HomePage";
 import { InvestigationPage } from "./pages/InvestigationPage";
 import { NotFoundPage } from "./pages/NotFoundPage";
 import { ReportPage } from "./pages/ReportPage";
+import { SubscriptionsPage } from "./pages/SubscriptionsPage";
+import { CalendarPage } from "./pages/CalendarPage";
 
 export function App() {
   return (
@@ -12,6 +14,8 @@ export function App() {
         <Route index element={<HomePage />} />
         <Route path="investigations/:id" element={<InvestigationPage />} />
         <Route path="reports/:id" element={<ReportPage />} />
+        <Route path="calendar" element={<CalendarPage />} />
+        <Route path="subscriptions" element={<SubscriptionsPage />} />
         <Route path="*" element={<NotFoundPage />} />
       </Route>
     </Routes>

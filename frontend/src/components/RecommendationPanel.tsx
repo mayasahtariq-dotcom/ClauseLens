@@ -43,7 +43,7 @@ export function RecommendationPanel({ report }: { report: ComparisonReport }) {
       <div className="relative grid gap-8 lg:grid-cols-[1.5fr_1fr]">
         <div>
           <span className="inline-flex items-center gap-2 rounded-full bg-ink px-3 py-1 text-xs font-bold text-sun">
-            <Sparkles className="h-3.5 w-3.5" aria-hidden="true" /> Recommendation
+            <Sparkles className="h-3.5 w-3.5" aria-hidden="true" /> {report.vendors.length === 1 ? "Policy Overview" : "Recommendation"}
           </span>
           <div className="mt-4 flex items-start gap-3">
             <Icon className="mt-1 h-9 w-9 shrink-0 animate-pop-in" aria-hidden="true" />

@@ -183,3 +183,61 @@ export interface VendorInput {
   name: string;
   domain?: string;
 }
+
+// -------------------------------------------------------------
+// Renewal Calendar & Subscription Tracking Types
+// -------------------------------------------------------------
+export type BillingFrequency = "monthly" | "quarterly" | "annual" | "weekly";
+export type SubscriptionStatus = "active" | "trialing" | "cancelled" | "expired";
+export type CalendarEventType =
+  | "renewal"
+  | "trial_expiry"
+  | "cancellation_deadline"
+  | "subscription_expiry"
+  | "policy_change";
+
+export interface ReminderPreference {
+  id: string;
+  days_before: number;
+  target_event: CalendarEventType;
+  channel: string;
+  enabled: boolean;
+}
+
+export interface SubscriptionRecord {
+  id?: string;
+  vendor_name: string;
+  vendor_id?: string | null;
+  plan_name: string;
+  status: SubscriptionStatus;
+  billing_frequency: BillingFrequency;
+  recurring_amount: number;
+  currency: string;
+  start_date: string;
+  next_renewal_date?: string | null;
+  trial_start_date?: string | null;
+  trial_expiry_date?: string | null;
+  cancellation_notice_hours: number;
+  calculated_cancellation_deadline?: string | null;
+  subscription_expiry_date?: string | null;
+  reminders?: ReminderPreference[];
+  notes?: string | null;
+  policy_snapshot_id?: string | null;
+  created_at?: string;
+  updated_at?: string;
+}
+
+export interface CalendarEvent {
+  id: string;
+  subscription_id: string;
+  vendor_name: string;
+  plan_name: string;
+  event_type: CalendarEventType;
+  event_date: string;
+  title: string;
+  description: string;
+  amount?: number | null;
+  currency: string;
+  is_urgent: boolean;
+  policy_citation?: string | null;
+}

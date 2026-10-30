@@ -37,7 +37,7 @@ def test_single_verified_claim_is_found() -> None:
     assert f.evidence[0].verification is VerificationStatus.VERIFIED
     assert f.evidence[0].source_url == S1.url
     assert f.evidence[0].retrieved_at == S1.retrieved_at
-    assert f.evidence[0].extraction == META
+    assert f.evidence[0].extraction == {**META, "risk_level": "none"}
 
 
 def test_disagreeing_sources_are_contradictory() -> None:

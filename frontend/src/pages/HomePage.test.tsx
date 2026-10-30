@@ -9,16 +9,16 @@ const empty = { items: [], total: 0, limit: 6, offset: 0 };
 describe("HomePage", () => {
   afterEach(() => vi.unstubAllGlobals());
 
-  it("requires two vendors before investigating", async () => {
+  it("enables investigation with one vendor or multiple", async () => {
     mockFetch({ "/api/meta": meta, "/api/investigations?limit": empty });
     renderAt(<HomePage />);
     const user = userEvent.setup();
-    const start = await screen.findByRole("button", { name: /^investigate/i });
+    const start = await screen.findByRole("button", { name: /audit policy|investigate/i });
     expect(start).toBeDisabled();
     await user.type(screen.getByLabelText(/vendor name/i), "Coursera");
     await user.click(screen.getByRole("button", { name: /^add$/i }));
-    expect(start).toBeDisabled();
-    expect(screen.getByText("Add 1 more vendor")).toBeInTheDocument();
+    expect(start).toBeEnabled();
+    expect(screen.getByText("Ready to audit Coursera")).toBeInTheDocument();
     await user.type(screen.getByLabelText(/vendor name/i), "Udemy");
     await user.click(screen.getByRole("button", { name: /^add$/i }));
     expect(start).toBeEnabled();

@@ -1,5 +1,5 @@
 import { useMutation, useQuery } from "@tanstack/react-query";
-import { ArrowLeft, RefreshCw } from "lucide-react";
+import { ArrowLeft, RefreshCw, Calendar } from "lucide-react";
 import { useCallback, useMemo, useState } from "react";
 import { Link, useNavigate, useParams } from "react-router-dom";
 import { api, ApiError } from "../api/client";
@@ -49,10 +49,20 @@ export function ReportPage() {
         <header className="flex flex-wrap items-end justify-between gap-4">
           <div>
             <span className="eyebrow">
-              Report · {data.vendors.length} vendors · generated {new Date(data.created_at).toLocaleString()}
+              {data.vendors.length === 1
+                ? `Policy audit · ${data.vendors[0]?.name ?? "Vendor"}`
+                : `Report · ${data.vendors.length} vendors`} · generated {new Date(data.created_at).toLocaleString()}
             </span>
             <h1 className="mt-3 text-4xl leading-tight sm:text-5xl">
-              Side-by-side <span className="text-gradient">comparison</span>
+              {data.vendors.length === 1 ? (
+                <>
+                  Policy & risk <span className="text-gradient">analysis</span>
+                </>
+              ) : (
+                <>
+                  Side-by-side <span className="text-gradient">comparison</span>
+                </>
+              )}
             </h1>
           </div>
           <div className="flex flex-wrap gap-2">
@@ -68,6 +78,29 @@ export function ReportPage() {
 
       <Reveal delay={80}>
         <RecommendationPanel report={data} />
+      </Reveal>
+
+      {/* Action Bar */}
+      <Reveal delay={110}>
+        <div className="flex flex-wrap items-center justify-between gap-3 rounded-3xl border-3 border-ink bg-paper p-4 sm:p-5 shadow-soft">
+          <div className="flex flex-wrap items-center gap-2">
+            <Link
+              to={`/subscriptions?from_inv=${data.investigation_id ?? ""}&vendor_id=${data.recommendation.vendor_id ?? ""}`}
+              className="btn bg-sun px-4 py-2.5 text-xs font-bold text-ink shadow-soft hover:bg-sun/90 flex items-center gap-1.5"
+            >
+              <Calendar className="h-4 w-4" /> Track in Renewal Calendar
+            </Link>
+            <Link
+              to="/calendar"
+              className="btn-white px-4 py-2.5 text-xs font-bold flex items-center gap-1.5"
+            >
+              View Full Calendar
+            </Link>
+          </div>
+          <span className="text-[11px] font-bold uppercase tracking-wider text-ink/60">
+            Never miss a cancellation window
+          </span>
+        </div>
       </Reveal>
       <Reveal delay={140}>
         <ComparisonMatrix report={data} labels={labels} onEvidence={setTarget} />

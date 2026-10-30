@@ -1,4 +1,5 @@
 import type {
+  CalendarEvent,
   ComparisonReport,
   Evidence,
   Investigation,
@@ -7,6 +8,7 @@ import type {
   Meta,
   Page,
   Priority,
+  SubscriptionRecord,
   VendorInput,
 } from "./types";
 
@@ -68,4 +70,29 @@ export const api = {
       method: "POST",
       body: JSON.stringify({ vendor_ids: vendorIds, priorities }),
     }),
+
+  // Renewal Calendar & Subscriptions
+  subscriptions: (status?: string) =>
+    request<SubscriptionRecord[]>(`/api/subscriptions${status ? `?status=${status}` : ""}`),
+  getSubscription: (id: string) => request<SubscriptionRecord>(`/api/subscriptions/${id}`),
+  createSubscription: (sub: SubscriptionRecord) =>
+    request<SubscriptionRecord>("/api/subscriptions", {
+      method: "POST",
+      body: JSON.stringify(sub),
+    }),
+  updateSubscription: (id: string, updates: Partial<SubscriptionRecord>) =>
+    request<SubscriptionRecord>(`/api/subscriptions/${id}`, {
+      method: "PATCH",
+      body: JSON.stringify(updates),
+    }),
+  deleteSubscription: (id: string) => request<{ success: boolean }>(`/api/subscriptions/${id}`, { method: "DELETE" }),
+  calendarEvents: (fromDate?: string, toDate?: string) => {
+    const params = new URLSearchParams();
+    if (fromDate) params.set("from_date", fromDate);
+    if (toDate) params.set("to_date", toDate);
+    const qs = params.toString() ? `?${params.toString()}` : "";
+    return request<CalendarEvent[]>(`/api/calendar/events${qs}`);
+  },
+  draftSubscription: (investigationId: string, vendorId: string) =>
+    request<SubscriptionRecord>(`/api/subscriptions/draft/${investigationId}/${vendorId}`),
 };

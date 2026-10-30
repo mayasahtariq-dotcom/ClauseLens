@@ -29,6 +29,7 @@ from clauselens.adapters.persistence.models import (
     PolicyClauseRow,
     PolicySnapshotRow,
     RetrievedSourceRow,
+    SubscriptionRow,
     VendorRow,
 )
 from clauselens.config import Settings
@@ -447,6 +448,100 @@ class SqlAlchemyRepository:
                     extraction=ev.extraction or {}, vendor_id=vendor_id, vendor_name=vendor_name, source_title=title,
                 ))
             return out
+
+    # subscriptions
+    def _row_to_sub(self, r: SubscriptionRow) -> Any:
+        from clauselens.domain.calendar_engine import (
+            BillingFrequency,
+            ReminderPreference,
+            SubscriptionRecord,
+            SubscriptionStatus,
+        )
+        reminders = [ReminderPreference.model_validate(rem) for rem in (r.reminders or [])]
+        return SubscriptionRecord(
+            id=r.id,
+            vendor_name=r.vendor_name,
+            vendor_id=r.vendor_id,
+            plan_name=r.plan_name,
+            status=SubscriptionStatus(r.status),
+            billing_frequency=BillingFrequency(r.billing_frequency),
+            recurring_amount=float(r.recurring_amount),
+            currency=r.currency,
+            start_date=_aware(r.start_date),
+            next_renewal_date=_aware(r.next_renewal_date) if r.next_renewal_date else None,
+            trial_start_date=_aware(r.trial_start_date) if r.trial_start_date else None,
+            trial_expiry_date=_aware(r.trial_expiry_date) if r.trial_expiry_date else None,
+            cancellation_notice_hours=r.cancellation_notice_hours,
+            subscription_expiry_date=_aware(r.subscription_expiry_date) if r.subscription_expiry_date else None,
+            reminders=reminders,
+            notes=r.notes,
+            policy_snapshot_id=r.policy_snapshot_id,
+            created_at=_aware(r.created_at),
+            updated_at=_aware(r.updated_at),
+        )
+
+    def create_subscription(self, sub: Any) -> Any:
+        with self._session() as s:
+            row = SubscriptionRow(
+                id=sub.id,
+                vendor_name=sub.vendor_name,
+                vendor_id=sub.vendor_id,
+                plan_name=sub.plan_name,
+                status=sub.status.value,
+                billing_frequency=sub.billing_frequency.value,
+                recurring_amount=sub.recurring_amount,
+                currency=sub.currency,
+                start_date=sub.start_date,
+                next_renewal_date=sub.next_renewal_date,
+                trial_start_date=sub.trial_start_date,
+                trial_expiry_date=sub.trial_expiry_date,
+                cancellation_notice_hours=sub.cancellation_notice_hours,
+                subscription_expiry_date=sub.subscription_expiry_date,
+                reminders=[rem.model_dump(mode="json") for rem in sub.reminders],
+                notes=sub.notes,
+                policy_snapshot_id=sub.policy_snapshot_id,
+            )
+            s.add(row)
+            s.flush()
+            return self._row_to_sub(row)
+
+    def get_subscription(self, subscription_id: uuid.UUID) -> Any | None:
+        with self._session() as s:
+            r = s.get(SubscriptionRow, subscription_id)
+            return self._row_to_sub(r) if r else None
+
+    def list_subscriptions(self, *, status: str | None = None) -> list[Any]:
+        with self._session() as s:
+            stmt = select(SubscriptionRow).order_by(SubscriptionRow.created_at.desc())
+            if status:
+                stmt = stmt.where(SubscriptionRow.status == status)
+            rows = s.scalars(stmt).all()
+            return [self._row_to_sub(r) for r in rows]
+
+    def update_subscription(self, subscription_id: uuid.UUID, updates: dict[str, Any]) -> Any | None:
+        with self._session() as s:
+            r = s.get(SubscriptionRow, subscription_id)
+            if not r:
+                return None
+            for k, v in updates.items():
+                if hasattr(r, k) and v is not None:
+                    if k == "reminders" and isinstance(v, list):
+                        setattr(r, k, [item.model_dump(mode="json") if hasattr(item, "model_dump") else item for item in v])
+                    elif k in ("status", "billing_frequency") and hasattr(v, "value"):
+                        setattr(r, k, v.value)
+                    else:
+                        setattr(r, k, v)
+            r.updated_at = datetime.now(UTC)
+            s.flush()
+            return self._row_to_sub(r)
+
+    def delete_subscription(self, subscription_id: uuid.UUID) -> bool:
+        with self._session() as s:
+            r = s.get(SubscriptionRow, subscription_id)
+            if not r:
+                return False
+            s.delete(r)
+            return True
 
 
 def create(settings: Settings) -> SqlAlchemyRepository:

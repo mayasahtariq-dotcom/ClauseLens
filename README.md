@@ -95,6 +95,18 @@ cd backend && RUN_LIVE_TESTS=1 TINYFISH_API_KEY=... LLM_API_KEY=... .venv/bin/py
 | GET | `/api/reports/{id}` | comparison report |
 | GET | `/api/reports/{id}/evidence` | quotes, URLs, timestamps, verification status |
 | GET | `/api/meta` | field catalogue, criteria, active providers, demo flag |
+| POST | `/api/subscriptions` | save a tracked subscription from investigated policy or manual input |
+| GET | `/api/subscriptions` | list tracked subscriptions |
+| PATCH | `/api/subscriptions/{id}` | update subscription details or mark cancelled |
+| DELETE | `/api/subscriptions/{id}` | delete subscription |
+| GET | `/api/calendar/events` | calendar schedule of upcoming renewals, trial expiries, & notice windows |
 | GET | `/health`, `/ready`, `/metrics` | liveness, dependency readiness, Prometheus counters |
+
+## Features & Navigation
+
+- **Investigate**: Audit any single website's terms or compare multiple vendors head-to-head.
+- **Compare**: Side-by-side evidence matrix and deterministic policy score rankings.
+- **Renewal Calendar**: Month and upcoming timeline view of recurring charges, free trial expirations, and cancellation notice deadlines.
+- **Subscriptions**: Personal recurring subscription management with notice protection, status tracking, and iCalendar (`.ics`) export.
 
 Interactive OpenAPI docs: `http://localhost:8000/docs`.

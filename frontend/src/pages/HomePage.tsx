@@ -309,8 +309,8 @@ export function HomePage() {
   });
 
   const max = meta.data?.max_vendors ?? 5;
-  const canStart = vendors.length >= 2 && !create.isPending;
-  const progress = Math.min(1, vendors.length / 2);
+  const canStart = vendors.length >= 1 && !create.isPending;
+  const progress = Math.min(1, vendors.length >= 1 ? 1 : 0);
 
   return (
     <>
@@ -342,7 +342,7 @@ export function HomePage() {
             <SectionHeader
               number="01"
               title="Pick your vendors"
-              subtitle="Add two to five services you are choosing between."
+              subtitle="Enter a website to audit its policies, or add up to five to compare."
               aside={
                 meta.data?.demo_mode ? (
                   <button
@@ -375,10 +375,16 @@ export function HomePage() {
             <div className="relative flex flex-col items-start justify-between gap-5 sm:flex-row sm:items-center">
               <div>
                 <p className="font-display text-2xl font-extrabold">
-                  {vendors.length < 2 ? `Add ${2 - vendors.length} more vendor${vendors.length === 1 ? "" : "s"}` : "Ready to investigate"}
+                  {vendors.length === 0
+                    ? "Add at least 1 website to investigate"
+                    : vendors.length === 1
+                      ? `Ready to audit ${vendors[0]?.name ?? "vendor"}`
+                      : "Ready to compare vendors"}
                 </p>
                 <p className="mt-1 text-sm text-white/70">
-                  ClauseLens reads each vendor&apos;s official policy pages. This usually takes a minute or two.
+                  {vendors.length === 1
+                    ? `ClauseLens will retrieve and analyze ${vendors[0]?.name ?? "this vendor"}'s official fine print, policies, and risks.`
+                    : "ClauseLens reads each vendor's official policy pages and compares them head-to-head."}
                 </p>
                 <div className="mt-3 h-1.5 w-56 overflow-hidden rounded-full bg-white/15" aria-hidden="true">
                   <div className="h-full rounded-full bg-gradient-to-r from-sun via-bubblegum to-lagoon transition-all duration-500" style={{ width: `${progress * 100}%` }} />
@@ -390,7 +396,12 @@ export function HomePage() {
                 disabled={!canStart}
                 onClick={() => create.mutate()}
               >
-                {create.isPending ? "Starting…" : "Investigate"} <ArrowRight className="h-5 w-5" aria-hidden="true" />
+                {create.isPending
+                  ? "Starting…"
+                  : vendors.length === 1
+                    ? "Audit Policy"
+                    : "Investigate"}{" "}
+                <ArrowRight className="h-5 w-5" aria-hidden="true" />
               </button>
             </div>
           </div>

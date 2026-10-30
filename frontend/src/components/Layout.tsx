@@ -6,9 +6,10 @@ import { Backdrop } from "./Backdrop";
 import { DemoBanner } from "./ui";
 
 const NAV = [
-  { href: "/#how", label: "How it works" },
+  { href: "/", label: "Investigate" },
   { href: "/#compare", label: "Compare" },
-  { href: "/#recent", label: "Recent" },
+  { href: "/calendar", label: "Renewal Calendar" },
+  { href: "/subscriptions", label: "Subscriptions" },
 ];
 
 function Logo() {

@@ -167,7 +167,7 @@ def test_idempotency_key_returns_same_investigation(client: TestClient) -> None:
 
 
 @pytest.mark.parametrize("body,needle", [
-    ({"vendors": [{"name": "Only"}]}, "at least 2"),
+    ({"vendors": []}, "at least 1"),
     ({"vendors": [{"name": "A"}, {"name": "a"}]}, "unique"),
     ({"vendors": [{"name": "A", "domain": "localhost"}, {"name": "B"}]}, "not a public website"),
     ({"vendors": [{"name": "A", "domain": "http://10.0.0.1"}, {"name": "B"}]}, "IP addresses"),

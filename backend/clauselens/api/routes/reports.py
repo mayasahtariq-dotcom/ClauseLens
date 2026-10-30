@@ -57,3 +57,4 @@ def vendor_policies(vendor_id: UUID, limit: int = Query(10, ge=1, le=50), offset
     items, total = c.repository.list_snapshots(vendor_id, limit=limit, offset=offset)
     return VendorPoliciesOut(vendor_id=vendor.id, vendor_name=vendor.name, domain=vendor.domain, items=items,
                              total=total, limit=limit, offset=offset)
+
